@@ -23,7 +23,7 @@ javascript:fetch("https://raw.githubusercontent.com/dev-cat7252/Wplace-AutoFarm/
 ```
 **Auto Image**
 ```javascript
-javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-IMAGE.js?token=GHSAT0AAAAAADJFYYAQS3FW4WKDHHDWGRZS2E7HTUQ").then(t=>t.text()).then(eval);
+javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-IMAGE.js).then(t=>t.text()).then(eval);
 ```
 ---
 
