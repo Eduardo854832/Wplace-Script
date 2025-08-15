@@ -40,7 +40,7 @@ javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/
 5. Save.
 6. Visit [wplace.live](https://wplace.live) and click the bookmark to activate the bot!
 
-> See the detailed step-by-step guide in [TUTORIAL_en.md](./TUTORIAL_en.md)
+> See the detailed step-by-step guide in [TUTORIAL_en.md](./TUTORIAL.en.md)
 
 ---
 
