@@ -64,4 +64,4 @@ Este projeto está sob licença MIT. Veja [LICENSE](./LICENSE) para detalhes.
 
 ---
 
-<div align="center"><sub>Feito com 💜 por dev-cat7252</sub></div>
+<div align="center"><sub>Feito com 💜 por Eduardo854832</sub></div>
