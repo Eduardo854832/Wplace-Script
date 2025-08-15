@@ -21,9 +21,9 @@ Sempre copie o script deste repositório e nunca de terceiros!
 ```javascript
 javascript:fetch("https://raw.githubusercontent.com/dev-cat7252/Wplace-AutoFarm/refs/heads/main/AutoFarm.js").then(t=>t.text()).then(eval);
 ```
-**Auto Image (MANUTENÇÃO)**
+**Auto Image**
 ```javascript
-javascript:fetch("https://raw.githubusercontent.com/dev-cat7252/Wplace-Script/refs/heads/main/AutoImage.js").then(t=>t.text()).then(eval);
+javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-IMAGE.js?token=GHSAT0AAAAAADJFYYAQS3FW4WKDHHDWGRZS2E7HTUQ").then(t=>t.text()).then(eval);
 ```
 ---
 
