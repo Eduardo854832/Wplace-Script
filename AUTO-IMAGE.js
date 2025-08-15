@@ -29,8 +29,8 @@
   // ---------------------------------------------------------------------------
   const TEXTS = {
     pt: {
-      title: "WPlace Auto-Image",
-      initBot: "Iniciar Auto-BOT",
+      title: "WPlace Auto-Image by Eduardo854833",
+      initBot: "Start Bot",
       uploadImage: "Upload da Imagem",
       resizeImage: "Redimensionar",
       selectPosition: "Selecionar Posição",
@@ -57,7 +57,7 @@
       pixels: "Pixels",
       charges: "Cargas",
       estimatedTime: "Tempo estimado",
-      initMessage: "Clique em 'Iniciar Auto-BOT' para começar",
+      initMessage: "Clique em 'Start Bot' para começar",
       waitingInit: "Aguardando inicialização...",
       resizeSuccess: "✅ Redimensionada para {width}x{height}",
       paintingPaused: "⏸️ Pausado em X: {x}, Y: {y}",
@@ -70,7 +70,7 @@
     },
     en: {
       title: "WPlace Auto-Image",
-      initBot: "Start Auto-BOT",
+      initBot: "Start",
       uploadImage: "Upload Image",
       resizeImage: "Resize",
       selectPosition: "Select Position",
