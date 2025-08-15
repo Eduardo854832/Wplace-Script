@@ -1,0 +1,67 @@
+#  🎨 Wplace-AutoFarm
+
+Automatize ações no [wplace.live](https://wplace.live) e turbine sua experiência!  
+> ⚠️ **Atenção:** O script pode não funcionar como o esperado em todas as situações.
+
+---
+
+## ✨ O que é?
+
+Wplace-AutoFarm é um script/bookmarklet para automatizar tarefas repetitivas no site wplace.live, como pintar pixels automaticamente. Ele traz uma interface amigável direto no navegador, sem precisar instalar extensões!
+
+---
+
+## 🚀 Como Usar
+
+### 1. Copie o Bookmarklet Oficial
+
+Sempre copie o script deste repositório e nunca de terceiros!
+
+**Auto Farm (MANUTENÇÃO)**
+```javascript
+javascript:fetch("https://raw.githubusercontent.com/dev-cat7252/Wplace-AutoFarm/refs/heads/main/AutoFarm.js").then(t=>t.text()).then(eval);
+```
+**Auto Image (MANUTENÇÃO)**
+```javascript
+javascript:fetch("https://raw.githubusercontent.com/dev-cat7252/Wplace-Script/refs/heads/main/AutoImage.js").then(t=>t.text()).then(eval);
+```
+---
+
+### 2. Instale no seu Navegador (Google Chrome)
+
+1. Abra o Chrome.
+2. Clique nos três pontinhos > Favoritos > Gerenciador de favoritos.
+3. Adicione qualquer página aos favoritos.
+4. Edite o favorito recém criado:
+    - Nome: `wplace` (ou como preferir)
+    - URL: Apague tudo e cole o script acima.
+5. Salve.
+6. Acesse [wplace.live](https://wplace.live) e clique no favorito para ativar o bot!
+
+> Veja o passo a passo detalhado no arquivo [TUTORIAL.md](./TUTORIAL.md)
+
+---
+
+## 🛡️ Segurança
+
+- **Nunca** execute scripts enviados por terceiros.
+- O script não solicita senha nem dados sensíveis.
+- Sempre confira se está copiando do repositório original.
+- Para mais informações, leia o [SECURITY.md](./SECURITY.md).
+
+---
+
+## ❓ Dúvidas e Suporte
+
+- [Abra uma issue](https://github.com/dev-cat7252/Wplace-AutoFarm/issues) para dúvidas, bugs ou sugestões!
+- Leia o [TUTORIAL.md](./TUTORIAL.md) para um guia completo.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob licença MIT. Veja [LICENSE](./LICENSE) para detalhes.
+
+---
+
+<div align="center"><sub>Feito com 💜 por dev-cat7252</sub></div>
