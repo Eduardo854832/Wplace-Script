@@ -52,7 +52,7 @@ javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/
 
 ## ❓ Dúvidas e Suporte
 
-- [Abra uma issue](https://github.com/dev-cat7252/Wplace-AutoFarm/issues) para dúvidas, bugs ou sugestões!
+- [Abra uma issue](https://github.com/Eduardo854832/Wplace-Script/issues/3) para dúvidas, bugs ou sugestões!
 - Leia o [TUTORIAL.md](./TUTORIAL.md) para um guia completo.
 
 ---
