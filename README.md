@@ -47,7 +47,6 @@ javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/
 - **Nunca** execute scripts enviados por terceiros.
 - O script não solicita senha nem dados sensíveis.
 - Sempre confira se está copiando do repositório original.
-- Para mais informações, leia o [SECURITY.md](./SECURITY.md).
 
 ---
 
