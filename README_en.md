@@ -44,22 +44,6 @@ javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/
 
 ---
 
-## 🛡️ Security
-
-- **Never** run scripts sent by third parties.
-- The script does not request passwords or sensitive data.
-- Always confirm you are copying from the original repository.
-- For more information, read [SECURITY_en.md](./SECURITY_en.md).
-
----
-
-## ❓ Questions & Support
-
-- [Open an issue](https://github.com/dev-cat7252/Wplace-AutoFarm/issues) for questions, bugs, or suggestions!
-- Read [TUTORIAL_en.md](./TUTORIAL_en.md) for the complete guide.
-
----
-
 ## 📄 License
 
 This project is under the MIT license. See [LICENSE](./LICENSE) for details.
