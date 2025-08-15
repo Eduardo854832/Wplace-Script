@@ -1,12 +1,8 @@
 /**
  * WPlace Auto-Image Bot (versão remodelada e responsiva)
- * - Layout atualizado para desktop e mobile
- * - Novas opções de configuração (ordem, velocidade, ignorações, tema, idioma)
- * - Loop de pintura otimizado com lista de pixels
- * - Textos revisados e ampliados
  *
  * Autor base: Eduardo854833 (script reconstituído)
- * Redesign: (esta versão)
+ * Redesign + ajustes de drag: (esta versão)
  */
 
 (async () => {
@@ -50,7 +46,7 @@
   };
 
   // ---------------------------------------------------------------------------
-  // Textos multilíngues atualizados
+  // Textos multilíngues
   // ---------------------------------------------------------------------------
   const TEXTS = {
     pt: {
@@ -194,19 +190,19 @@
     availableColors: [],
     currentCharges: 0,
     cooldown: CONFIG.COOLDOWN_DEFAULT,
-    imageData: null,          // { width,height,pixels,totalPixels,processor }
-    startPosition: null,      // { x,y }
-    region: null,             // { x,y }
-    lastPosition: { x: 0, y: 0 }, // deprecado (substituído por pixelIndex)
+    imageData: null,
+    startPosition: null,
+    region: null,
+    lastPosition: { x: 0, y: 0 },
     estimatedTime: 0,
     language: "pt",
     theme: CONFIG.THEME_DARK.name,
     minimized: false,
-    pixelList: [],            // [{x,y,idx,r,g,b,a}]
+    pixelList: [],
     pixelIndex: 0,
     settings: {
-      order: "ltr",           // ltr | rtl | random
-      speed: "normal",        // safe | normal | fast
+      order: "ltr",
+      speed: "normal",
       skipWhite: true,
       skipTransparent: true
     },
@@ -245,7 +241,7 @@
         .filter(el => !el.querySelector("svg"))
         .filter(el => {
           const id = parseInt(el.id.replace("color-", ""));
-            return id !== 0 && id !== 5;
+          return id !== 0 && id !== 5;
         })
         .map(el => {
           const id = parseInt(el.id.replace("color-", ""));
@@ -303,7 +299,6 @@
       if (remainingPixels <= 0) return 0;
       const pixelDelay = utils.getPixelDelay();
       if (charges > remainingPixels) return remainingPixels * pixelDelay;
-      // Aproximação: grupos de 'charges' seguidos de cooldown
       const cycles = Math.ceil(remainingPixels / Math.max(charges,1));
       return cycles * cooldown + remainingPixels * pixelDelay;
     },
@@ -372,7 +367,7 @@
         this.img.onload = () => {
           this.canvas.width = this.img.width;
           this.canvas.height = this.img.height;
-            this.ctx.drawImage(this.img,0,0);
+          this.ctx.drawImage(this.img,0,0);
           resolve();
         };
         this.img.onerror = reject;
@@ -407,7 +402,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Mapeia para cor mais próxima
+  // Mapear cor
   // ---------------------------------------------------------------------------
   function mapToNearestColor(rgb, palette) {
     return palette.reduce(
@@ -420,7 +415,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Construção da lista de pixels
+  // Lista de pixels
   // ---------------------------------------------------------------------------
   function buildPixelList() {
     if (!state.imageData) return;
@@ -438,7 +433,6 @@
         list.push({ x, y, idx, r, g, b, a });
       }
     }
-    // Ordem
     if (state.settings.order === "rtl") {
       list.sort((p1,p2) => p2.y === p1.y ? p2.x - p1.x : p1.y - p2.y);
     } else if (state.settings.order === "ltr") {
@@ -455,7 +449,7 @@
   }
 
   // ---------------------------------------------------------------------------
-  // UI
+  // Tema / UI
   // ---------------------------------------------------------------------------
   let root, themeStyle;
   function currentThemeObj() {
@@ -485,6 +479,9 @@
     if (root) root.setAttribute("data-theme", t.name);
   }
 
+  // ---------------------------------------------------------------------------
+  // Drag (mouse + touch)
+  // ---------------------------------------------------------------------------
   function initDrag(headerEl, container) {
     let pos1=0,pos2=0,pos3=0,pos4=0;
     const touch = ('ontouchstart' in window);
@@ -496,7 +493,7 @@
         pos3 = e.touches[0].clientX;
         pos4 = e.touches[0].clientY;
         document.addEventListener("touchend", dragEnd);
-        document.addEventListener("touchmove", dragMove);
+        document.addEventListener("touchmove", dragMove, { passive:false });
       } else {
         pos3 = e.clientX;
         pos4 = e.clientY;
@@ -530,22 +527,26 @@
     headerEl.addEventListener(touch ? "touchstart":"mousedown", dragStart);
   }
 
+  // ---------------------------------------------------------------------------
+  // Inicialização da UI
+  // ---------------------------------------------------------------------------
   function initUI() {
     detectLanguage();
     applyTheme();
 
-    // Font Awesome
     if (!document.querySelector('link[href*="font-awesome/6.4.0"]')) {
       const fa = document.createElement("link");
       fa.rel = "stylesheet";
       fa.href = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css";
       document.head.appendChild(fa);
     }
+
     const style = document.createElement("style");
     style.textContent = `
       #wplace-bot-panel[data-theme="light"] .wplace-header,
       #wplace-bot-panel {
         font-family: "Segoe UI", Roboto, Oxygen, sans-serif;
+        user-select:none;
       }
       #wplace-bot-panel {
         position:fixed; top:20px; right:20px;
@@ -579,6 +580,7 @@
         letter-spacing:.5px;
         user-select:none;
         cursor:move;
+        touch-action:none;
       }
       .wplace-header .title { display:flex; gap:10px; align-items:center; font-size:15px }
       .wplace-header .title i { color:var(--w-highlight); filter:drop-shadow(0 0 6px var(--w-glow)) }
@@ -795,7 +797,6 @@
         border-color:var(--w-highlight);
         box-shadow:0 4px 16px -6px var(--w-glow);
       }
-      /* Modal resize */
       .resize-modal {
         position:fixed; inset:0;
         display:flex; align-items:center; justify-content:center;
@@ -851,12 +852,12 @@
     root = document.createElement("div");
     root.id = "wplace-bot-panel";
     root.innerHTML = `
-      <div class="wplace-header no-drag">
+      <div class="wplace-header">
         <div class="title"><i class="fas fa-palette"></i><span id="titleText">${utils.t("title")}</span></div>
         <div class="header-actions no-drag">
-          <button class="icon-btn" id="themeToggle" title="${utils.t("theme")}"><i class="fas fa-adjust"></i></button>
-          <button class="icon-btn" id="langToggle" title="${utils.t("language")}"><i class="fas fa-language"></i></button>
-          <button class="icon-btn" id="minBtn" title="${utils.t("minimize")}"><i class="fas fa-minus"></i></button>
+          <button class="icon-btn no-drag" id="themeToggle" title="${utils.t("theme")}"><i class="fas fa-adjust"></i></button>
+          <button class="icon-btn no-drag" id="langToggle" title="${utils.t("language")}"><i class="fas fa-language"></i></button>
+          <button class="icon-btn no-drag" id="minBtn" title="${utils.t("minimize")}"><i class="fas fa-minus"></i></button>
         </div>
       </div>
       <div class="wplace-content">
@@ -964,7 +965,7 @@
     const langSelect = root.querySelector("#langSelect");
     const applySettings = root.querySelector("#applySettings");
 
-    // Resize modal
+    // Modal de Resize
     let resizeModal;
     function openResize() {
       if (!state.imageLoaded || !state.imageData.processor) return;
@@ -1043,7 +1044,6 @@
       cancelResize.onclick = () => resizeModal.remove();
     }
 
-    // UI Atualização
     window.updateUI = (key, type="default", vars={}) => {
       const msg = utils.t(key, vars);
       statusText.textContent = msg;
@@ -1069,7 +1069,6 @@
 
       progressBar.style.width = percent + "%";
 
-      // px/s estimativa
       let pxps = 0;
       const now = performance.now();
       state.perf.recent = state.perf.recent.filter(r => now - r.t < 10000);
@@ -1101,7 +1100,6 @@
       `;
     };
 
-    // Colapsar settings
     collapseSettings.addEventListener("click", () => {
       const collapsed = settingsSection.classList.toggle("collapsed");
       const inner = settingsSection.querySelector(".settings-inner");
@@ -1114,7 +1112,6 @@
       }
     });
 
-    // Minimizar
     minBtn.addEventListener("click", () => {
       state.minimized = !state.minimized;
       if (state.minimized) {
@@ -1126,7 +1123,6 @@
       }
     });
 
-    // Alternar tema rápido
     themeToggle.addEventListener("click", () => {
       state.theme = state.theme === "dark" ? "light" : "dark";
       themeSelect.value = state.theme;
@@ -1134,7 +1130,6 @@
       utils.showToast(utils.t("themeChanged"), currentThemeObj());
     });
 
-    // Alternar idioma rápido
     langToggle.addEventListener("click", () => {
       state.language = state.language === "pt" ? "en" : "pt";
       langSelect.value = state.language;
@@ -1158,17 +1153,16 @@
 
     function refreshTexts() {
       root.querySelector("#titleText").textContent = utils.t("title");
-      btnInit.querySelector("span").textContent = utils.t("initBot");
-      btnUpload.querySelector("span").textContent = utils.t("uploadImage");
-      btnResize.querySelector("span").textContent = utils.t("resizeImage");
-      btnPos.querySelector("span").textContent = utils.t("selectPosition");
-      btnStart.querySelector("span").textContent = utils.t("startPainting");
-      btnStop.querySelector("span").textContent = utils.t(state.running ? "stopPainting":"stopPainting");
-      btnRebuild.querySelector("span").textContent = utils.t("rebuildList");
+      root.querySelector("#btnInit span").textContent = utils.t("initBot");
+      root.querySelector("#btnUpload span").textContent = utils.t("uploadImage");
+      root.querySelector("#btnResize span").textContent = utils.t("resizeImage");
+      root.querySelector("#btnPos span").textContent = utils.t("selectPosition");
+      root.querySelector("#btnStart span").textContent = utils.t("startPainting");
+      root.querySelector("#btnStop span").textContent = utils.t("stopPainting");
+      root.querySelector("#btnRebuild span").textContent = utils.t("rebuildList");
       minBtn.title = utils.t("minimize");
       themeToggle.title = utils.t("theme");
       langToggle.title = utils.t("language");
-      collapseSettings.previousElementSibling?.querySelector("span")?.textContent;
       themeSelect.querySelectorAll("option").forEach(o => {
         if (o.value === "dark") o.textContent = utils.t("theme_dark");
         if (o.value === "light") o.textContent = utils.t("theme_light");
@@ -1186,7 +1180,6 @@
       updateStats();
     }
 
-    // Eventos principais
     btnInit.addEventListener("click", async () => {
       updateUI("checkingColors");
       state.availableColors = utils.extractAvailableColors();
@@ -1227,7 +1220,6 @@
 
     btnResize.addEventListener("click", openResize);
 
-    // Selecionar posição
     btnPos.addEventListener("click", () => {
       const nativeFetch = window.fetch;
       updateUI("waitingPosition");
@@ -1313,12 +1305,11 @@
       utils.showToast(utils.t("confirmStop"), currentThemeObj());
     });
 
-    // Expor refreshTexts no escopo
     window._refreshTexts = refreshTexts;
   }
 
   // ---------------------------------------------------------------------------
-  // Painting loop usando pixelList
+  // Loop de pintura
   // ---------------------------------------------------------------------------
   async function paintingLoop() {
     const { x: baseX, y: baseY } = state.startPosition;
