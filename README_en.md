@@ -19,7 +19,7 @@ Automate actions on [wplace.live](https://wplace.live) and boost your experience
 ## 📋 Table of Contents
 
 - [✨ What is it?](#-what-is-it)
-- [🚀 Quick Start](#-quick-start)  
+- [🚀 Quick Start](#-quick-start)
 - [📖 How to Use](#-how-to-use)
 - [🗺️ Roadmap](#️-roadmap)
 - [🤝 Contributing](#-contributing)
@@ -98,7 +98,7 @@ javascript: fetch(
 ## 🗺️ Roadmap
 
 - [ ] **v0.2.0**: Interface improvements and new algorithms
-- [ ] **v0.3.0**: Plugin system and extensibility  
+- [ ] **v0.3.0**: Plugin system and extensibility
 - [ ] **v0.4.0**: Support for more platforms
 - [ ] **v1.0.0**: Complete stable version
 
@@ -111,9 +111,11 @@ javascript: fetch(
 Contributions are always welcome! See the [contribution guide](./CONTRIBUTING.md) to learn how to help.
 
 ### 🐛 Found a bug?
+
 Open an [issue](https://github.com/Eduardo854832/Wplace-Script/issues/new/choose) using the appropriate template.
 
 ### 💡 Have an idea?
+
 Share a [feature request](https://github.com/Eduardo854832/Wplace-Script/issues/new/choose)!
 
 ---

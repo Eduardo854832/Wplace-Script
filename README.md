@@ -45,7 +45,7 @@ Wplace-Script é uma coleção de scripts/bookmarklets para automatizar tarefas 
 
 1. **Copie o script desejado** (sempre do repositório oficial!)
 2. **Adicione como favorito** no seu navegador
-3. **Acesse [wplace.live](https://wplace.live)** 
+3. **Acesse [wplace.live](https://wplace.live)**
 4. **Clique no favorito** para ativar o bot!
 
 > 📚 Veja o [tutorial detalhado](./TUTORIAL.md) para instruções completas.
@@ -111,9 +111,11 @@ javascript: fetch(
 Contribuições são sempre bem-vindas! Veja o [guia de contribuição](./CONTRIBUTING.md) para saber como ajudar.
 
 ### 🐛 Encontrou um bug?
+
 Abra uma [issue](https://github.com/Eduardo854832/Wplace-Script/issues/new/choose) usando o template apropriado.
 
 ### 💡 Tem uma ideia?
+
 Compartilhe uma [feature request](https://github.com/Eduardo854832/Wplace-Script/issues/new/choose)!
 
 ---

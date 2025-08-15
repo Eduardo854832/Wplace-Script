@@ -31,6 +31,8 @@ describe('Project Sanity Check', () => {
   test('should support fetch API simulation', () => {
     // Basic check that fetch is available in the test environment
     // In jsdom, fetch might not be available by default
-    expect(typeof fetch === 'function' || typeof fetch === 'undefined').toBe(true)
+    expect(typeof fetch === 'function' || typeof fetch === 'undefined').toBe(
+      true
+    )
   })
 })
