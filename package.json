@@ -1,0 +1,44 @@
+{
+  "name": "wplace-script",
+  "version": "0.1.0",
+  "description": "Script/bookmarklet para automatizar tarefas no wplace.live - Automate tasks on wplace.live",
+  "main": "AUTO-FARM.js",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "jest",
+    "prepare": "npm run lint && npm run test",
+    "start": "echo 'Use the bookmarklets from the README to run the scripts in your browser'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eduardo854832/Wplace-Script.git"
+  },
+  "keywords": [
+    "wplace",
+    "automation",
+    "bookmarklet",
+    "pixel-art",
+    "browser-script",
+    "javascript"
+  ],
+  "author": "Eduardo854832",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Eduardo854832/Wplace-Script/issues"
+  },
+  "homepage": "https://github.com/Eduardo854832/Wplace-Script#readme",
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "prettier": "^3.2.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,6 +1,7 @@
 # 🎨 Wplace-AutoFarm
 
-Automate actions on [wplace.live](https://wplace.live) and boost your experience!  
+Automate actions on [wplace.live](https://wplace.live) and boost your experience!
+
 > ⚠️ **Warning:** The script may not work as expected in every situation.
 
 ---
@@ -18,13 +19,23 @@ Wplace-AutoFarm is a script / bookmarklet to automate repetitive tasks on wplace
 Always copy the script from this repository—never from third parties!
 
 **Auto Farm (MAINTENANCE)**
+
 ```javascript
-javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-FARM.js").then(t=>t.text()).then(eval);
+javascript: fetch(
+  'https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-FARM.js'
+)
+  .then(t => t.text())
+  .then(eval)
 ```
 
 **Auto Image**
+
 ```javascript
-javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-IMAGE.js").then(t=>t.text()).then(eval);
+javascript: fetch(
+  'https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-IMAGE.js'
+)
+  .then(t => t.text())
+  .then(eval)
 ```
 
 ---

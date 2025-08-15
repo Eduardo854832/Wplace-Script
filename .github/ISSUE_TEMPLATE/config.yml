@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussões / Discussions
+    url: https://github.com/Eduardo854832/Wplace-Script/discussions
+    about: Para perguntas gerais, ideias ou discussões sobre o projeto / For general questions, ideas or discussions about the project
+  - name: 📚 Tutorial
+    url: https://github.com/Eduardo854832/Wplace-Script/blob/main/TUTORIAL.md
+    about: Veja o tutorial detalhado de como usar os scripts / See the detailed tutorial on how to use the scripts
+  - name: 🔒 Relatar Vulnerabilidade / Report Security Vulnerability
+    url: mailto:Eduardo854832@outlook.com
+    about: Para relatar vulnerabilidades de segurança de forma privada / To report security vulnerabilities privately
