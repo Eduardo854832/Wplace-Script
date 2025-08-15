@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         WPlace Auto-Farm Avançado (Menu Redesenhado)
-// @description  Auto painter com UI nova, múltiplos algoritmos, modos de cor, configurações persistentes, depuração e marca d'água personalizada.
+// @description  Auto painter com UI nova, múltiplos algoritmos, modos de cor, configurações persistentes e depuração.
 // @version      2.0.1
 // @author       Eduardo85482232
 // @run-at       document-end
