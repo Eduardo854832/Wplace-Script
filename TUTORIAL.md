@@ -19,4 +19,5 @@
 **Pronto! O script estará ativo! 🚀**
 
 ---
+
 Dúvidas? Veja o README.md ou abra uma issue.

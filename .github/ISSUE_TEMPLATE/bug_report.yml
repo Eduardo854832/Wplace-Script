@@ -1,0 +1,91 @@
+name: 🐛 Bug Report / Relatório de Bug
+description: Relate um bug para nos ajudar a melhorar / Report a bug to help us improve
+title: '[Bug]: '
+labels: ['bug', 'needs-triage']
+assignees:
+  - Eduardo854832
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por reportar este bug! Por favor, preencha as informações abaixo.
+
+        Thanks for reporting this bug! Please fill out the information below.
+
+  - type: dropdown
+    id: script
+    attributes:
+      label: 🎯 Qual script está afetado? / Which script is affected?
+      description: Selecione o script que apresenta o problema / Select the script with the issue
+      options:
+        - AUTO-FARM.js
+        - AUTO-IMAGE.js
+        - Ambos / Both
+        - Outro / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: bug-description
+    attributes:
+      label: 🐛 Descrição do Bug / Bug Description
+      description: Descreva claramente o que está acontecendo / Clearly describe what is happening
+      placeholder: |
+        O que você esperava que acontecesse vs. o que realmente aconteceu...
+        What you expected to happen vs. what actually happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 Passos para Reproduzir / Steps to Reproduce
+      description: Como reproduzir este problema? / How to reproduce this issue?
+      placeholder: |
+        1. Vá para...
+        2. Clique em...
+        3. Veja o erro...
+
+        1. Go to...
+        2. Click on...
+        3. See error...
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: 🌐 Navegador / Browser
+      description: Qual navegador e versão você está usando? / Which browser and version are you using?
+      placeholder: 'Chrome 120.0.0.0, Firefox 121.0, etc.'
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: 💻 Sistema Operacional / Operating System
+      description: Qual SO você está usando? / Which OS are you using?
+      placeholder: 'Windows 11, macOS 14, Ubuntu 22.04, etc.'
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: ℹ️ Informações Adicionais / Additional Information
+      description: |
+        Qualquer outra informação que possa ser útil (screenshots, logs do console, etc.)
+        Any other information that might be helpful (screenshots, console logs, etc.)
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Confirmações / Confirmations
+      description: Por favor, confirme os itens abaixo / Please confirm the items below
+      options:
+        - label: Eu verifiquei se não existe um issue similar já aberto / I checked that there isn't already a similar issue open
+          required: true
+        - label: Eu estou usando o script oficial deste repositório / I'm using the official script from this repository
+          required: true
+        - label: Eu tentei limpar o cache do navegador / I tried clearing the browser cache
+          required: true

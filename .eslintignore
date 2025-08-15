@@ -1,0 +1,4 @@
+# TODO: Remove these ignores after refactoring the main scripts
+# Currently excluding large legacy scripts to avoid immediate large refactor
+AUTO-FARM.js
+AUTO-IMAGE.js

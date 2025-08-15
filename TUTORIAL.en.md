@@ -19,4 +19,5 @@
 **Done! The script will be active! 🚀**
 
 ---
+
 Questions? Check the README.md or open an issue.

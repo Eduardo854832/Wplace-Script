@@ -1,0 +1,94 @@
+name: 💡 Feature Request / Solicitação de Recurso
+description: Sugira uma nova funcionalidade para o projeto / Suggest a new feature for the project
+title: '[Feature]: '
+labels: ['enhancement', 'needs-triage']
+assignees:
+  - Eduardo854832
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por sugerir uma nova funcionalidade! Por favor, preencha as informações abaixo.
+
+        Thanks for suggesting a new feature! Please fill out the information below.
+
+  - type: dropdown
+    id: feature-type
+    attributes:
+      label: 📋 Tipo de Funcionalidade / Feature Type
+      description: Que tipo de funcionalidade você está sugerindo? / What type of feature are you suggesting?
+      options:
+        - Melhoria no AUTO-FARM.js / AUTO-FARM.js improvement
+        - Melhoria no AUTO-IMAGE.js / AUTO-IMAGE.js improvement
+        - Nova funcionalidade / New functionality
+        - Melhoria na interface / UI improvement
+        - Melhoria na documentação / Documentation improvement
+        - Outro / Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-summary
+    attributes:
+      label: 🎯 Resumo do Problema / Problem Summary
+      description: |
+        Qual problema esta funcionalidade resolveria? Descreva o contexto.
+        What problem would this feature solve? Describe the context.
+      placeholder: |
+        Exemplo: "É frustrante quando... porque..."
+        Example: "It's frustrating when... because..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: 💡 Solução Proposta / Proposed Solution
+      description: Como você imagina que essa funcionalidade funcionaria? / How do you imagine this feature would work?
+      placeholder: |
+        Descreva detalhadamente como a funcionalidade deveria funcionar...
+        Describe in detail how the feature should work...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 Alternativas Consideradas / Alternatives Considered
+      description: |
+        Você considerou outras alternativas ou soluções? Quais?
+        Did you consider other alternatives or solutions? Which ones?
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: ⚡ Prioridade / Priority
+      description: Qual a urgência desta funcionalidade para você? / How urgent is this feature for you?
+      options:
+        - Alta / High - Preciso urgentemente / I need it urgently
+        - Média / Medium - Seria muito útil / Would be very useful
+        - Baixa / Low - Seria bom ter / Nice to have
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: 📎 Contexto Adicional / Additional Context
+      description: |
+        Qualquer outra informação, screenshots, mockups, ou exemplos que possam ajudar.
+        Any other information, screenshots, mockups, or examples that might help.
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: ✅ Confirmações / Confirmations
+      description: Por favor, confirme os itens abaixo / Please confirm the items below
+      options:
+        - label: Eu verifiquei se não existe uma solicitação similar já aberta / I checked that there isn't already a similar request open
+          required: true
+        - label: Esta funcionalidade está relacionada ao escopo do projeto / This feature is related to the project scope
+          required: true
+        - label: Eu entendo que esta é uma sugestão e pode não ser implementada / I understand this is a suggestion and may not be implemented
+          required: true
