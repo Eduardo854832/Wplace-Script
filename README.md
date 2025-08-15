@@ -42,21 +42,6 @@ javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/
 
 ---
 
-## 🛡️ Segurança
-
-- **Nunca** execute scripts enviados por terceiros.
-- O script não solicita senha nem dados sensíveis.
-- Sempre confira se está copiando do repositório original.
-
----
-
-## ❓ Dúvidas e Suporte
-
-- [Abra uma issue](https://github.com/Eduardo854832/Wplace-Script/issues/3) para dúvidas, bugs ou sugestões!
-- Leia o [TUTORIAL.md](./TUTORIAL.md) para um guia completo.
-
----
-
 ## 📄 Licença
 
 Este projeto está sob licença MIT. Veja [LICENSE](./LICENSE) para detalhes.
