@@ -17,7 +17,7 @@ Wplace-AutoFarm é um script/bookmarklet para automatizar tarefas repetitivas no
 
 Sempre copie o script deste repositório e nunca de terceiros!
 
-**Auto Farm (MANUTENÇÃO)**
+**Auto Farm**
 ```javascript
 javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-FARM.js").then(t=>t.text()).then(eval);
 ```
