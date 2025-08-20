@@ -1,77 +1,106 @@
-/* ==== PROTEÇÃO (OFUSCADA) ==== */
-(function(){
-  try {
-    const _0x1 = "https://github.com/Eduardo854832/Wplace-Script";
-    const _0x2 = "⚠️ ESTA NÃO É A VERSÃO OFICIAL!\n👉 Oficial: " + _0x1;
-
-    if (window.WPLACE_PROTECT) return;
-    Object.defineProperty(window, "WPLACE_PROTECT", {
-      value: true,
-      writable: false,
-      configurable: false
-    });
-
-    console.log("%c" + _0x2,
-      "color:red;font-size:16px;font-weight:bold;");
-
-    setInterval(() => {
-      if (!window.WPLACE_PROTECT) {
-        alert("⚠️ Script inválido!\nBaixe a versão oficial:\n" + _0x1);
-        throw new Error("Proteção acionada.");
-      }
-    }, 3000);
-
-  } catch (e) {
-    alert("⚠️ Script adulterado!\nUse somente a versão oficial!");
-    throw new Error("Proteção acionada.");
-  }
-})();
-/* ==== FIM DA PROTEÇÃO ==== */
-
-
-/* ==== BOT (LEGÍVEL) ==== */
 (function () {
-  // Checagem da proteção
+  // Bloqueia se removerem a proteção
   if (!window.WPLACE_PROTECT) {
     alert("⚠️ Script adulterado!\nBaixe a versão oficial:\nhttps://github.com/Eduardo854832/Wplace-Script");
     throw new Error("Script bloqueado por remoção da proteção.");
   }
 
-  console.log("✅ Bot iniciado corretamente.");
+  console.log("✅ Bot carregado com sucesso.");
 
-  // Exemplo de bot
+  // =========================
+  // SISTEMA DE LOGS
+  // =========================
+  const logBox = document.createElement("div");
+  logBox.style.cssText = `
+    position:fixed;top:10px;right:10px;width:280px;
+    max-height:50%;overflow:auto;
+    background:rgba(0,0,0,0.8);color:#0f0;
+    font-family:monospace;font-size:12px;
+    border-radius:10px;padding:10px;z-index:999999;
+  `;
+  document.body.appendChild(logBox);
+
+  function log(msg, color="lime") {
+    const time = new Date().toLocaleTimeString();
+    const p = document.createElement("div");
+    p.innerHTML = `[${time}] <span style="color:${color}">${msg}</span>`;
+    logBox.appendChild(p);
+    logBox.scrollTop = logBox.scrollHeight;
+  }
+
+  // =========================
+  // BOT PRINCIPAL
+  // =========================
   const WplaceBot = {
     running: false,
 
     start() {
       if (this.running) {
-        console.warn("⚠️ O bot já está rodando!");
+        log("⚠️ O bot já está rodando!", "yellow");
         return;
       }
       this.running = true;
-      console.log("🚀 Bot STARTED");
+      log("🚀 Bot STARTED", "cyan");
       this.loop();
     },
 
     stop() {
       if (!this.running) {
-        console.warn("⚠️ O bot já está parado!");
+        log("⚠️ O bot já está parado!", "yellow");
         return;
       }
       this.running = false;
-      console.log("🛑 Bot STOPPED");
+      log("🛑 Bot STOPPED", "orange");
     },
 
     loop() {
       if (!this.running) return;
-      console.log("🎨 Colocando pixel automático...");
 
-      // simulação de delay
+      // Exemplo: aqui vai sua lógica real de "farm"
+      const x = Math.floor(Math.random() * 1000);
+      const y = Math.floor(Math.random() * 1000);
+      log(`✅ Pixel colocado em (${x},${y})`, "lime");
+
+      // repete a cada 5s
       setTimeout(() => this.loop(), 5000);
     }
   };
 
-  // Expor no console
+  // =========================
+  // MENU VISUAL
+  // =========================
+  const menu = document.createElement("div");
+  menu.style.cssText = `
+    position:fixed;bottom:20px;right:20px;
+    background:#222;color:#fff;
+    border-radius:12px;padding:12px;
+    font-family:Arial;font-size:14px;
+    box-shadow:0 0 10px rgba(0,0,0,.5);
+    z-index:999999;
+  `;
+  menu.innerHTML = `
+    <b>🎨 Wplace Bot</b><br>
+    <button id="startBtn">▶️ Start</button>
+    <button id="stopBtn">⏹ Stop</button>
+    <div id="status" style="margin-top:8px;color:cyan;">Status: Stopped</div>
+  `;
+  document.body.appendChild(menu);
+
+  const statusEl = menu.querySelector("#status");
+  menu.querySelector("#startBtn").onclick = () => {
+    WplaceBot.start();
+    statusEl.textContent = "Status: Running";
+    statusEl.style.color = "lime";
+  };
+  menu.querySelector("#stopBtn").onclick = () => {
+    WplaceBot.stop();
+    statusEl.textContent = "Status: Stopped";
+    statusEl.style.color = "red";
+  };
+
+  // =========================
+  // EXPOR NO CONSOLE
+  // =========================
   window.WplaceBot = WplaceBot;
 
 })();
