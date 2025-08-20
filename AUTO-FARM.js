@@ -3,7 +3,7 @@
     START_X: 742,
     START_Y: 1148,
     PIXELS_PER_LINE: 100,
-    DELAY: 500, // mais rápido
+    BASE_DELAY: 500,
     THEME: {
       primary: '#000000',
       secondary: '#111111',
@@ -17,15 +17,18 @@
 
   const state = {
     running: false,
+    paused: false,
     paintedCount: 0,
     charges: { count: 0, max: 80, cooldownMs: 30000 },
     userInfo: null,
-    lastPixel: null,
+    lastPixels: [],
     minimized: false,
     menuOpen: false,
     language: 'en',
     autoRefresh: true,
-    pausedForManual: false
+    pausedForManual: false,
+    paintMode: localStorage.getItem("paintMode") || "sequential", // "random" ou "sequential"
+    panelPos: JSON.parse(localStorage.getItem("panelPos") || '{"top":20,"left":20}')
   };
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -64,13 +67,20 @@
       const res = await fetch(url, { credentials: 'include', ...options });
       return await res.json();
     } catch {
+      updateUI("⚠️ Falha de rede", "error");
       return null;
     }
   };
 
-  // ==== Novo sistema de seleção em ordem ====
+  // ==== Posição sequencial ou aleatória ====
   let posX = 0, posY = 0;
   const getNextPosition = () => {
+    if (state.paintMode === "random") {
+      return {
+        x: Math.floor(Math.random() * CONFIG.PIXELS_PER_LINE),
+        y: Math.floor(Math.random() * CONFIG.PIXELS_PER_LINE)
+      };
+    }
     const pos = { x: posX, y: posY };
     posX++;
     if (posX >= CONFIG.PIXELS_PER_LINE) {
@@ -128,32 +138,39 @@
     }
   };
 
-  // ==== Loop de pintura otimizado ====
+  // ==== Delay adaptativo ====
+  const getAdaptiveDelay = () => {
+    if (state.charges.count > 20) return CONFIG.BASE_DELAY; // rápido
+    if (state.charges.count > 5) return CONFIG.BASE_DELAY * 2;
+    return CONFIG.BASE_DELAY * 3; // lento
+  };
+
+  // ==== Loop de pintura ====
   const paintLoop = async () => {
-    while (state.running) {
+    while (state.running && !state.paused) {
       const { count, cooldownMs } = state.charges;
       if (count < 1) {
-        updateUI(state.language === 'pt' ? `⌛ Sem cargas. Esperando ${Math.ceil(cooldownMs/1000)}s...` : `⌛ No charges. Waiting ${Math.ceil(cooldownMs/1000)}s...`, 'status');
+        updateUI(state.language === 'pt' ? `⌛ Sem cargas...` : `⌛ No charges...`, 'status');
         await sleep(cooldownMs);
         await getCharge();
         continue;
       }
 
-      // Pinta até 5 de uma vez
-      const batch = Math.min(state.charges.count, 5);
+      const batch = Math.min(state.charges.count, 10);
       for (let i = 0; i < batch; i++) {
         const pos = getNextPosition();
         const result = await paintPixel(pos.x, pos.y);
         if (result?.painted === 1) {
           state.paintedCount++;
-          state.lastPixel = { x: CONFIG.START_X + pos.x, y: CONFIG.START_Y + pos.y, time: new Date() };
+          state.lastPixels.unshift({ x: CONFIG.START_X + pos.x, y: CONFIG.START_Y + pos.y, time: new Date().toLocaleTimeString() });
+          state.lastPixels = state.lastPixels.slice(0, 5);
           state.charges.count--;
-          updateUI(state.language === 'pt' ? '✅ Pixel pintado!' : '✅ Pixel painted!', 'success');
+          updateUI('✅ Pixel!', 'success');
         }
       }
 
       updateStats();
-      await sleep(CONFIG.DELAY);
+      await sleep(getAdaptiveDelay());
     }
   };
 
@@ -164,97 +181,103 @@
 
     const style = document.createElement('style');
     style.textContent = `
-      @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-      .wplace-bot-panel { position: fixed; top: 20px; right: 20px; width: 230px; background: ${CONFIG.THEME.primary}; border: 1px solid ${CONFIG.THEME.accent}; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); font-family: 'Segoe UI', Roboto, sans-serif; color: ${CONFIG.THEME.text}; animation: slideIn 0.4s ease-out; z-index:9999; }
-      .wplace-header { padding: 8px 12px; background: ${CONFIG.THEME.secondary}; color: ${CONFIG.THEME.highlight}; font-size: 15px; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: move; }
-      .wplace-content { padding: 10px; display: ${state.minimized ? 'none' : 'block'}; }
-      .wplace-controls { display: flex; align-items:center; gap: 6px; margin-bottom: 10px; }
-      .wplace-btn { flex:1; padding: 8px; border:none; border-radius:6px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; font-size:13px; }
-      .wplace-btn-primary { background:${CONFIG.THEME.accent}; color:white; }
-      .wplace-btn-stop { background:${CONFIG.THEME.error}; color:white; }
-      .wplace-stats { display:grid; grid-template-columns:1fr 1fr; gap:6px; background:${CONFIG.THEME.secondary}; padding:8px; border-radius:6px; margin-bottom:10px; font-size:13px; }
-      .wplace-stat-item { display:flex; flex-direction:column; align-items:center; font-size:12px; }
-      .wplace-status { padding:6px; border-radius:4px; text-align:center; font-size:12px; background:rgba(255,255,255,0.08); }
-      .status-success { background:rgba(0,255,0,0.15); color:${CONFIG.THEME.success}; }
-      .status-error { background:rgba(255,0,0,0.15); color:${CONFIG.THEME.error}; }
+      .wplace-bot-panel { position: fixed; top:${state.panelPos.top}px; left:${state.panelPos.left}px; width:250px; background:${CONFIG.THEME.primary}; border:1px solid ${CONFIG.THEME.accent}; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5); font-family:Segoe UI, Roboto, sans-serif; color:${CONFIG.THEME.text}; z-index:9999; }
+      .wplace-header { padding:6px 10px; background:${CONFIG.THEME.secondary}; color:${CONFIG.THEME.highlight}; font-size:15px; font-weight:bold; display:flex; justify-content:space-between; cursor:move; }
+      .wplace-content { padding:8px; }
+      .wplace-btn { padding:6px; border:none; border-radius:6px; margin:2px; cursor:pointer; font-size:13px; font-weight:600; }
+      .primary { background:${CONFIG.THEME.accent}; color:white; }
+      .danger { background:${CONFIG.THEME.error}; color:white; }
+      .success { background:${CONFIG.THEME.success}; color:black; }
+      .wplace-stats { font-size:12px; background:${CONFIG.THEME.secondary}; padding:6px; border-radius:6px; margin-top:6px; }
     `;
     document.head.appendChild(style);
 
     const t = state.language === 'pt'
-      ? { title: "Auto-Farm", start: "Iniciar", stop: "Parar", ready: "Pronto" }
-      : { title: "Auto-Farm", start: "Start", stop: "Stop", ready: "Ready" };
+      ? { title:"Auto-Farm", start:"Iniciar", stop:"Parar", pause:"Pausar", resume:"Retomar", mode:"Modo", random:"Aleatório", seq:"Sequencial", last:"Últimos pixels" }
+      : { title:"Auto-Farm", start:"Start", stop:"Stop", pause:"Pause", resume:"Resume", mode:"Mode", random:"Random", seq:"Sequential", last:"Last pixels" };
 
     const panel = document.createElement('div');
     panel.className = 'wplace-bot-panel';
     panel.innerHTML = `
-      <div class="wplace-header">
-        <span>🎨 ${t.title}</span>
-        <button id="minimizeBtn" style="background:none;border:none;color:white;">${state.minimized ? '⬜' : '➖'}</button>
-      </div>
+      <div class="wplace-header" id="dragHeader">🎨 ${t.title}</div>
       <div class="wplace-content">
-        <div class="wplace-controls">
-          <button id="toggleBtn" class="wplace-btn wplace-btn-primary"><i class="fas fa-play"></i>${t.start}</button>
-          <label style="font-size:12px;"><input type="checkbox" id="autoRefreshCheckbox" ${state.autoRefresh ? 'checked':''}/> Auto</label>
+        <button id="startBtn" class="wplace-btn primary">${t.start}</button>
+        <button id="pauseBtn" class="wplace-btn success">${t.pause}</button>
+        <button id="stopBtn" class="wplace-btn danger">${t.stop}</button>
+        <div style="margin-top:6px;">
+          ${t.mode}: <select id="modeSelect">
+            <option value="sequential"${state.paintMode==="sequential"?" selected":""}>${t.seq}</option>
+            <option value="random"${state.paintMode==="random"?" selected":""}>${t.random}</option>
+          </select>
         </div>
-        <div class="wplace-stats" id="statsArea"><div>...</div></div>
-        <div id="statusText" class="wplace-status">${t.ready}</div>
+        <div id="statsArea" class="wplace-stats">...</div>
+        <div style="margin-top:6px;"><b>${t.last}:</b><ul id="lastPixels" style="margin:0;padding-left:15px;font-size:11px;"></ul></div>
+        <div id="statusText" class="wplace-stats">Ready</div>
       </div>
     `;
     document.body.appendChild(panel);
 
-    const toggleBtn = panel.querySelector('#toggleBtn');
-    const minimizeBtn = panel.querySelector('#minimizeBtn');
-    const statsArea = panel.querySelector('#statsArea');
-    const content = panel.querySelector('.wplace-content');
+    // Drag do painel
+    const header = document.getElementById("dragHeader");
+    header.onmousedown = e => {
+      let startX = e.clientX, startY = e.clientY;
+      const initTop = panel.offsetTop, initLeft = panel.offsetLeft;
+      document.onmousemove = ev => {
+        panel.style.top = initTop + (ev.clientY - startY) + "px";
+        panel.style.left = initLeft + (ev.clientX - startX) + "px";
+      };
+      document.onmouseup = () => {
+        state.panelPos = { top: panel.offsetTop, left: panel.offsetLeft };
+        localStorage.setItem("panelPos", JSON.stringify(state.panelPos));
+        document.onmousemove = null;
+      };
+    };
 
-    toggleBtn.addEventListener('click', () => {
-      state.running = !state.running;
-      if (state.running && !capturedCaptchaToken) {
-        updateUI(state.language === 'pt' ? '❌ Clique em 1 pixel manualmente.' : '❌ Click any pixel manually first.', 'error');
-        state.running = false;
+    document.getElementById("startBtn").onclick = () => {
+      if (!capturedCaptchaToken) {
+        updateUI("❌ Clique em 1 pixel manualmente.", "error");
         return;
       }
-      if (state.running) {
-        toggleBtn.innerHTML = `<i class="fas fa-stop"></i>${t.stop}`;
-        toggleBtn.className = "wplace-btn wplace-btn-stop";
-        paintLoop();
-      } else {
-        toggleBtn.innerHTML = `<i class="fas fa-play"></i>${t.start}`;
-        toggleBtn.className = "wplace-btn wplace-btn-primary";
-        statsArea.innerHTML = '';
-        updateUI(state.language === 'pt' ? '⏹️ Parado' : '⏹️ Stopped', 'default');
-      }
-    });
+      state.running = true; state.paused=false; paintLoop();
+      updateUI("🚀 Started!", "success");
+    };
+    document.getElementById("pauseBtn").onclick = () => {
+      state.paused = !state.paused;
+      updateUI(state.paused ? "⏸️ Paused" : "▶️ Resumed", "status");
+      document.getElementById("pauseBtn").innerText = state.paused ? t.resume : t.pause;
+    };
+    document.getElementById("stopBtn").onclick = () => {
+      state.running=false; updateUI("⏹️ Stopped","status");
+    };
 
-    minimizeBtn.addEventListener('click', () => {
-      state.minimized = !state.minimized;
-      content.style.display = state.minimized ? 'none' : 'block';
-      minimizeBtn.textContent = state.minimized ? '⬜' : '➖';
-    });
-
-    panel.querySelector('#autoRefreshCheckbox').addEventListener('change', e => {
-      state.autoRefresh = e.target.checked;
-    });
+    document.getElementById("modeSelect").onchange = e => {
+      state.paintMode = e.target.value;
+      localStorage.setItem("paintMode", state.paintMode);
+    };
   };
 
-  window.updateUI = (message, type = 'default') => {
-    const statusText = document.querySelector('#statusText');
-    if (statusText) {
-      statusText.textContent = message;
-      statusText.className = `wplace-status status-${type}`;
+  window.updateUI = (msg, type="default") => {
+    const el = document.getElementById("statusText");
+    if (el) {
+      el.textContent = msg;
+      el.style.color = type==="error"?CONFIG.THEME.error : type==="success"?CONFIG.THEME.success : CONFIG.THEME.text;
     }
   };
 
   window.updateStats = async () => {
     await getCharge();
-    const statsArea = document.querySelector('#statsArea');
+    const statsArea = document.getElementById("statsArea");
+    const lastPixels = document.getElementById("lastPixels");
     if (statsArea && state.userInfo) {
       statsArea.innerHTML = `
-        <div class="wplace-stat-item"><b>${state.language==='pt'?'Usuário':'User'}</b> ${state.userInfo.name}</div>
-        <div class="wplace-stat-item"><b>${state.language==='pt'?'Pixels':'Pixels'}</b> ${state.paintedCount}</div>
-        <div class="wplace-stat-item"><b>${state.language==='pt'?'Cargas':'Charges'}</b> ${state.charges.count}/${state.charges.max}</div>
-        <div class="wplace-stat-item"><b>Lvl</b> ${state.userInfo.level||0}</div>
+        👤 ${state.userInfo.name}<br>
+        🎨 Pixels: ${state.paintedCount}<br>
+        ⚡ ${state.charges.count}/${state.charges.max}<br>
+        ⭐ Level: ${state.userInfo.level||0}
       `;
+    }
+    if (lastPixels) {
+      lastPixels.innerHTML = state.lastPixels.map(p => `<li>(${p.x},${p.y}) ${p.time}</li>`).join("");
     }
   };
 
