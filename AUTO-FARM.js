@@ -1,37 +1,3 @@
-/* ==== PROTEÇÃO (OFUSCADA) ==== */
-(function(){
-  try {
-    const repo = "https://github.com/Eduardo854832/Wplace-Script";
-    const msg = "⚠️ ESTA NÃO É A VERSÃO OFICIAL!\n🔗 Oficial: " + repo;
-
-    // trava se alguém apagar/alterar
-    if (window.WPLACE_PROTECT) return;
-    Object.defineProperty(window, "WPLACE_PROTECT", {
-      value: true,
-      writable: false,
-      configurable: false
-    });
-
-    // aviso no console
-    console.log("%c" + msg, "color:red;font-size:16px;font-weight:bold;");
-
-    // monitorar se tentarem apagar
-    setInterval(() => {
-      if (!window.WPLACE_PROTECT) {
-        alert("⚠️ Script inválido!\nBaixe a versão oficial:\n" + repo);
-        throw new Error("Proteção acionada.");
-      }
-    }, 3000);
-
-  } catch (e) {
-    alert("⚠️ Script adulterado!\nUse somente a versão oficial!");
-    throw new Error("Proteção acionada.");
-  }
-})();
-/* ==== FIM DA PROTEÇÃO ==== */
-
-
-/* ==== BOT (LEGÍVEL) ==== */
 (async () => {
   const CONFIG = {
     START_X: 742,
@@ -39,13 +5,13 @@
     PIXELS_PER_LINE: 100,
     BASE_DELAY: 500,
     THEME: {
-      primary: '#1e1e2f',
-      secondary: '#2c2c40',
-      accent: '#4f46e5',
-      text: '#f5f5f5',
-      highlight: '#a78bfa',
-      success: '#22c55e',
-      error: '#ef4444'
+      primary: '#000000',
+      secondary: '#111111',
+      accent: '#222222',
+      text: '#ffffff',
+      highlight: '#775ce3',
+      success: '#00ff00',
+      error: '#ff0000'
     }
   };
 
@@ -60,20 +26,37 @@
     menuOpen: false,
     language: 'en',
     autoRefresh: true,
-    paintMode: localStorage.getItem("paintMode") || "sequential",
+    pausedForManual: false,
+    paintMode: localStorage.getItem("paintMode") || "sequential", // "random" ou "sequential"
     panelPos: JSON.parse(localStorage.getItem("panelPos") || '{"top":20,"left":20}')
   };
 
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  const waitForSelector = async (selector, interval = 200, timeout = 5000) => {
+    const start = Date.now();
+    while (Date.now() - start < timeout) {
+      const el = document.querySelector(selector);
+      if (el) return el;
+      await sleep(interval);
+    }
+    return null;
+  };
+
   const originalFetch = window.fetch;
   let capturedCaptchaToken = null;
-
-  // interceptar token do captcha
   window.fetch = async (url, options = {}) => {
     if (typeof url === 'string' && url.includes('https://backend.wplace.live/s0/pixel/')) {
       try {
         const payload = JSON.parse(options.body || '{}');
-        if (payload.t) capturedCaptchaToken = payload.t;
+        if (payload.t) {
+          capturedCaptchaToken = payload.t;
+          if (state.pausedForManual) {
+            state.pausedForManual = false;
+            state.running = true;
+            updateUI(state.language === 'pt' ? '🚀 Pintura reiniciada!' : '🚀 Farm resumed!', 'success');
+            paintLoop();
+          }
+        }
       } catch {}
     }
     return originalFetch(url, options);
@@ -89,7 +72,7 @@
     }
   };
 
-  // ==== Posição ====
+  // ==== Posição sequencial ou aleatória ====
   let posX = 0, posY = 0;
   const getNextPosition = () => {
     if (state.paintMode === "random") {
@@ -138,23 +121,36 @@
         max: Math.floor(data.charges.max),
         cooldownMs: data.charges.cooldownMs
       };
+      if (state.userInfo.level) {
+        state.userInfo.level = Math.floor(state.userInfo.level);
+      }
     }
     return state.charges;
   };
 
-  // ==== Delay adaptativo ====
-  const getAdaptiveDelay = () => {
-    if (state.charges.count > 20) return CONFIG.BASE_DELAY;
-    if (state.charges.count > 5) return CONFIG.BASE_DELAY * 2;
-    return CONFIG.BASE_DELAY * 3;
+  const detectUserLocation = async () => {
+    try {
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      state.language = data.country === 'BR' ? 'pt' : 'en';
+    } catch {
+      state.language = 'en';
+    }
   };
 
-  // ==== Loop principal ====
+  // ==== Delay adaptativo ====
+  const getAdaptiveDelay = () => {
+    if (state.charges.count > 20) return CONFIG.BASE_DELAY; // rápido
+    if (state.charges.count > 5) return CONFIG.BASE_DELAY * 2;
+    return CONFIG.BASE_DELAY * 3; // lento
+  };
+
+  // ==== Loop de pintura ====
   const paintLoop = async () => {
     while (state.running && !state.paused) {
       const { count, cooldownMs } = state.charges;
       if (count < 1) {
-        updateUI("⌛ Sem cargas...", 'status');
+        updateUI(state.language === 'pt' ? `⌛ Sem cargas...` : `⌛ No charges...`, 'status');
         await sleep(cooldownMs);
         await getCharge();
         continue;
@@ -185,25 +181,26 @@
 
     const style = document.createElement('style');
     style.textContent = `
-      .wplace-bot-panel { position: fixed; top:${state.panelPos.top}px; left:${state.panelPos.left}px; width:280px; background:${CONFIG.THEME.primary}; border-radius:12px; padding:10px; font-family:Segoe UI, sans-serif; color:${CONFIG.THEME.text}; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,.5);}
-      .wplace-header { font-size:16px; font-weight:bold; color:${CONFIG.THEME.highlight}; margin-bottom:8px; text-align:center;}
-      .wplace-btn { padding:8px; border:none; border-radius:6px; margin:4px; cursor:pointer; font-size:13px; font-weight:600; }
+      .wplace-bot-panel { position: fixed; top:${state.panelPos.top}px; left:${state.panelPos.left}px; width:250px; background:${CONFIG.THEME.primary}; border:1px solid ${CONFIG.THEME.accent}; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.5); font-family:Segoe UI, Roboto, sans-serif; color:${CONFIG.THEME.text}; z-index:9999; }
+      .wplace-header { padding:6px 10px; background:${CONFIG.THEME.secondary}; color:${CONFIG.THEME.highlight}; font-size:15px; font-weight:bold; display:flex; justify-content:space-between; cursor:move; }
+      .wplace-content { padding:8px; }
+      .wplace-btn { padding:6px; border:none; border-radius:6px; margin:2px; cursor:pointer; font-size:13px; font-weight:600; }
       .primary { background:${CONFIG.THEME.accent}; color:white; }
       .danger { background:${CONFIG.THEME.error}; color:white; }
       .success { background:${CONFIG.THEME.success}; color:black; }
-      .wplace-stats { font-size:13px; background:${CONFIG.THEME.secondary}; padding:6px; border-radius:6px; margin-top:6px; }
+      .wplace-stats { font-size:12px; background:${CONFIG.THEME.secondary}; padding:6px; border-radius:6px; margin-top:6px; }
     `;
     document.head.appendChild(style);
 
     const t = state.language === 'pt'
-      ? { title:"Auto-Farm Oficial", start:"Iniciar", stop:"Parar", pause:"Pausar", resume:"Retomar", mode:"Modo", random:"Aleatório", seq:"Sequencial", last:"Últimos pixels" }
-      : { title:"Auto-Farm Official", start:"Start", stop:"Stop", pause:"Pause", resume:"Resume", mode:"Mode", random:"Random", seq:"Sequential", last:"Last pixels" };
+      ? { title:"Auto-Farm", start:"Iniciar", stop:"Parar", pause:"Pausar", resume:"Retomar", mode:"Modo", random:"Aleatório", seq:"Sequencial", last:"Últimos pixels" }
+      : { title:"Auto-Farm", start:"Start", stop:"Stop", pause:"Pause", resume:"Resume", mode:"Mode", random:"Random", seq:"Sequential", last:"Last pixels" };
 
     const panel = document.createElement('div');
     panel.className = 'wplace-bot-panel';
     panel.innerHTML = `
-      <div class="wplace-header">🎨 ${t.title}</div>
-      <div>
+      <div class="wplace-header" id="dragHeader">🎨 ${t.title}</div>
+      <div class="wplace-content">
         <button id="startBtn" class="wplace-btn primary">${t.start}</button>
         <button id="pauseBtn" class="wplace-btn success">${t.pause}</button>
         <button id="stopBtn" class="wplace-btn danger">${t.stop}</button>
@@ -220,18 +217,31 @@
     `;
     document.body.appendChild(panel);
 
-    // eventos
+    // Drag do painel
+    const header = document.getElementById("dragHeader");
+    header.onmousedown = e => {
+      let startX = e.clientX, startY = e.clientY;
+      const initTop = panel.offsetTop, initLeft = panel.offsetLeft;
+      document.onmousemove = ev => {
+        panel.style.top = initTop + (ev.clientY - startY) + "px";
+        panel.style.left = initLeft + (ev.clientX - startX) + "px";
+      };
+      document.onmouseup = () => {
+        state.panelPos = { top: panel.offsetTop, left: panel.offsetLeft };
+        localStorage.setItem("panelPos", JSON.stringify(state.panelPos));
+        document.onmousemove = null;
+      };
+    };
+
     document.getElementById("startBtn").onclick = () => {
       if (!capturedCaptchaToken) {
         updateUI("❌ Clique em 1 pixel manualmente.", "error");
         return;
       }
-      if (state.running) return; // evita spam
       state.running = true; state.paused=false; paintLoop();
       updateUI("🚀 Started!", "success");
     };
     document.getElementById("pauseBtn").onclick = () => {
-      if (!state.running) return;
       state.paused = !state.paused;
       updateUI(state.paused ? "⏸️ Paused" : "▶️ Resumed", "status");
       document.getElementById("pauseBtn").innerText = state.paused ? t.resume : t.pause;
@@ -239,6 +249,7 @@
     document.getElementById("stopBtn").onclick = () => {
       state.running=false; updateUI("⏹️ Stopped","status");
     };
+
     document.getElementById("modeSelect").onchange = e => {
       state.paintMode = e.target.value;
       localStorage.setItem("paintMode", state.paintMode);
@@ -270,6 +281,7 @@
     }
   };
 
+  await detectUserLocation();
   createUI();
   await getCharge();
   updateStats();
