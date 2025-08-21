@@ -1,7 +1,6 @@
-
 (async () => {
   /**************************************************************
-   * WPlace Auto-Farm — PRO (Layout Novo, Completo)
+   * WPlace Auto-Farm (Layout Novo, Completo)
    * - UI estilo "app mobile"/drawer + painel flutuante no desktop
    * - Logs em bolhas (sem overflow no mobile)
    * - Persistência: settings/posição/logs (localStorage)
