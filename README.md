@@ -19,7 +19,7 @@ Sempre copie o script deste repositório e nunca de terceiros!
 
 **Auto Farm**
 ```javascript
-javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/refs/heads/main/AUTO-FARM.js").then(t=>t.text()).then(eval);
+javascript:fetch("https://raw.githubusercontent.com/Eduardo854832/Wplace-Script/main/AUTO-FARM.js").then(r=>r.text()).then(code=>eval(code));
 ```
 **Auto Image**
 ```javascript
