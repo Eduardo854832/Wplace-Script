@@ -1,7 +1,7 @@
 
 (async () => {
   /**************************************************************
-   * WPlace Auto-Farm — PRO ULTRA FULL
+   * WPlace Auto-Farm
    * - Layout moderno (drawer/flutuante) + redimensionável
    * - Bubble (minimizado) arrastável c/ snap lateral e posição salva
    * - Start/Stop reais com integração ao backend do WPlace
