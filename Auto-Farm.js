@@ -1,7 +1,7 @@
 
 (async () => {
   /**************************************************************
-   * WPlace Auto-Farm — PRO UI
+   * WPlace Auto-Farm
    * - Modern responsive UI (mobile/desktop)
    * - LocalStorage persistence (position, settings, palette, area)
    * - Action history logs
